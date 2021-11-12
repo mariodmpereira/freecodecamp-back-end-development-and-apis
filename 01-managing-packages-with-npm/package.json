@@ -2,6 +2,7 @@
 	"name": "fcc-learn-npm-package-json",
 	"author": "Mário Pereira",
 	"description": "A project that does absolutely nothing, probably.",
+	"version": "1.0.0",
 	"keywords": [ "freecodecamp", "supermario", "luigi" ],
 	"license": "MIT",
 	"dependencies": {
