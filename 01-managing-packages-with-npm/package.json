@@ -3,6 +3,7 @@
 	"author": "Mário Pereira",
 	"description": "A project that does absolutely nothing, probably.",
 	"keywords": [ "freecodecamp", "supermario", "luigi" ],
+	"license": "MIT",
 	"dependencies": {
 		"express": "^5.0.0-alpha.8"
 	},
