@@ -1,6 +1,7 @@
 {
 	"name": "fcc-learn-npm-package-json",
 	"author": "Mário Pereira",
+	"description": "A project that does absolutely nothing, probably.",
 	"dependencies": {
 		"express": "^5.0.0-alpha.8"
 	},
