@@ -2,13 +2,13 @@
 	"name": "fcc-learn-npm-package-json",
 	"author": "Mário Pereira",
 	"description": "A project that does absolutely nothing, probably.",
+	"keywords": [ "freecodecamp", "supermario", "luigi" ],
 	"dependencies": {
 		"express": "^5.0.0-alpha.8"
 	},
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js",
-		"build": "node server.js"
+		"start": "node server.js"
 	},
 	"repository": {
 		"type": "git",
