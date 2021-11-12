@@ -6,7 +6,8 @@
 	"keywords": [ "freecodecamp", "supermario", "luigi" ],
 	"license": "MIT",
 	"dependencies": {
-		"express": "^5.0.0-alpha.8"
+		"express": "^5.0.0-alpha.8",
+		"moment": "2.14.0"
 	},
 	"main": "server.js",
 	"scripts": {
