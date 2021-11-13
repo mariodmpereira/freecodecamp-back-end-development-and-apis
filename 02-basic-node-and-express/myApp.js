@@ -3,4 +3,6 @@ var app = express();
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/views/index.html"));
 
- module.exports = app;
+app.use("/public", express.static(__dirname + "/public"));
+
+module.exports = app;
