@@ -12,15 +12,17 @@ const personSchema = {
     favoriteFoods: [String]
 }
 
-let Person = mongoose.model('Person', personSchema);
+const Person = mongoose.model('Person', personSchema);
+const supermario = new Person({ name: 'Super Mario', age: 40, favoriteFoods: ['Spaghetti'] });
+const luigi = new Person({ name: 'Luigi', age: 24, favoriteFoods: ['Spaghetti'] });
+const arrayOfPeople = [supermario, luigi];
 
 const createAndSavePerson = (done) => {
-    const person = new Person({ name: 'Super Mario', age: 40, favoriteFoods: ['Spaghetti'] });
-    person.save((err, data) => err ? done(err) : done(null, data));
+    supermario.save((err, data) => err ? done(err) : done(null, data));
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
-    done(null /*, data*/);
+    Person.create(arrayOfPeople, (err, data) => err ? done(err) : done(null, data));
 };
 
 const findPeopleByName = (personName, done) => {
