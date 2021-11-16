@@ -26,11 +26,11 @@ const createManyPeople = (arrayOfPeople, done) => {
 };
 
 const findPeopleByName = (personName, done) => {
-    Person.find({name: personName}, (err, data) => err ? done(err) : done(null, data));
+    Person.find({ name: personName }, (err, data) => err ? done(err) : done(null, data));
 };
 
 const findOneByFood = (food, done) => {
-    Person.findOne({favoriteFoods: food}, (err, data) => err ? done(err) : done(null, data));
+    Person.findOne({ favoriteFoods: food }, (err, data) => err ? done(err) : done(null, data));
 };
 
 const findPersonById = (personId, done) => {
@@ -40,7 +40,11 @@ const findPersonById = (personId, done) => {
 const findEditThenSave = (personId, done) => {
     const foodToAdd = "hamburger";
 
-    done(null /*, data*/);
+    Person.findById(personId, (err, person) => {
+        if (err) return done(err);
+        person.favoriteFoods.push(foodToAdd);
+        person.save((err, updatedPerson) => (err) ? done(err) : done(null, updatedPerson));
+    })
 };
 
 const findAndUpdate = (personName, done) => {
