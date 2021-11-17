@@ -1,3 +1,5 @@
 .idea/
 01-managing-packages-with-npm/node_modules/
 02-basic-node-and-express/node_modules/
+03-mongodb-and-mongoose/node_modules/
+04-back-end-development-and-apis-projects/01-timestamp-microservice/node_modules/
