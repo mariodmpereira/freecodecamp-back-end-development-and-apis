@@ -29,14 +29,16 @@ const userSchema = new Schema({
 
 const User = mongoose.model('User', userSchema)
 
-app.get('/api/', (req, res) => {
-    console.log("something")
+app.get('/api/users', (req, res) => {
+    User.find({}, (err, data) =>
+        err ? console.log(err) : res.json(data)
+    )
 })
 
 app.post('/api/users', (req, res) => {
     const username = req.body.username;
     User.create({ username: username }, (err, data) =>
-        err ? console.log(err) : res.json(data)
+        err ? console.log(err) : res.json({ _id: data._id, username: data.username })
     )
 })
 
