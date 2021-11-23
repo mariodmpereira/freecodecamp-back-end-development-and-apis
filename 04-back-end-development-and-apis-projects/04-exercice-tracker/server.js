@@ -42,6 +42,29 @@ app.post('/api/users', (req, res) => {
     )
 })
 
+app.post('/api/users/:id/exercises', (req, res) => { // description, duration, date
+    const id = req.params.id;
+    let { description, duration, date } = req.body;
+    date = date === undefined ? new Date().toDateString() : new Date(date).toDateString();
+
+    User.findOneAndUpdate(
+        { _id: id },
+        { description: description, duration: duration, date: date },
+        { new: true },
+        (err, data) => {
+            const response = {
+                username: data.username,
+                description: data.description,
+                duration: data.duration,
+                date: date,
+                _id: data._id
+            };
+            console.log(response)
+            err ? console.log(err) : res.json(response)
+        }
+    )
+})
+
 const listener = app.listen(process.env.PORT || 3000, () => {
     console.log('Your app is listening on port ' + listener.address().port)
 })
