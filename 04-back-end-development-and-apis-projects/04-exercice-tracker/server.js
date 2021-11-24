@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose');
+const ObjectId = require('mongoose').Types.ObjectId;
 const { Schema } = mongoose
 const bodyParser = require('body-parser');
 require('dotenv').config()
@@ -22,9 +23,11 @@ async function main() {
 
 const userSchema = new Schema({
     username: { type: String, require: true, unique: true },
-    description: String,
-    duration: Number,
-    date: Date
+    exercises: [{
+        description: String,
+        duration: Number,
+        date: Date
+    }]
 }, { versionKey: false })
 
 const User = mongoose.model('User', userSchema)
@@ -47,20 +50,25 @@ app.post('/api/users/:id/exercises', (req, res) => { // description, duration, d
     let { description, duration, date } = req.body;
     date = date === undefined ? new Date().toDateString() : new Date(date).toDateString();
 
-    User.findOneAndUpdate(
-        { _id: id },
-        { description: description, duration: duration, date: date },
-        { new: true },
-        (err, data) => {
-            const response = {
-                username: data.username,
-                description: data.description,
-                duration: data.duration,
-                date: date,
-                _id: data._id
-            };
-            console.log(response)
-            err ? console.log(err) : res.json(response)
+    const exerciseToAdd = {
+        description: description,
+        duration: duration,
+        date: date
+    };
+
+    User.findOne({ _id: new ObjectId(id) }, (err, data) => {
+            data.exercises.push(exerciseToAdd);
+            data.save((err, data) => {
+                const response = {
+                    username: data.username,
+                    description: description,
+                    duration: duration,
+                    date: date,
+                    _id: id
+                };
+
+                err ? console.log(err) : res.json(response)
+            })
         }
     )
 })
