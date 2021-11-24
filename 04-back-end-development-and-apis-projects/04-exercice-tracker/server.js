@@ -38,6 +38,25 @@ app.get('/api/users', (req, res) => {
     )
 })
 
+app.get('/api/users/:id/logs', (req, res) => {
+    const id = req.params.id;
+    User.findOne({ _id: new ObjectId(id) }, (err, data) => {
+        const log = [];
+        data.exercises.forEach(exercise => log.push({
+            description: exercise.description,
+            duration: exercise.duration,
+            date: new Date(exercise.date).toDateString()
+        }))
+        const response = {
+            username: data.username,
+            count: data.exercises.length,
+            _id: id,
+            log: log
+        }
+        err ? console.log(err) : res.json(response)
+    })
+})
+
 app.post('/api/users', (req, res) => {
     const username = req.body.username;
     User.create({ username: username }, (err, data) =>
@@ -45,27 +64,35 @@ app.post('/api/users', (req, res) => {
     )
 })
 
-app.post('/api/users/:id/exercises', (req, res) => { // description, duration, date
+app.post('/api/users/:id/exercises', (req, res) => {
     const id = req.params.id;
     let { description, duration, date } = req.body;
-    date = date === undefined ? new Date().toDateString() : new Date(date).toDateString();
 
-    const exerciseToAdd = {
+    console.log(date)
+
+    const newExercise = {
         description: description,
         duration: duration,
-        date: date
+        date: date ? new Date(date).toDateString() : new Date().toDateString()
     };
 
+    console.log(date)
+
+
     User.findOne({ _id: new ObjectId(id) }, (err, data) => {
-            data.exercises.push(exerciseToAdd);
+            console.log(data)
+            data.exercises.push(newExercise);
             data.save((err, data) => {
+                console.log(data)
                 const response = {
                     username: data.username,
-                    description: description,
-                    duration: duration,
-                    date: date,
-                    _id: id
+                    description: data.exercises[data.exercises.length - 1].description,
+                    duration: data.exercises[data.exercises.length - 1].duration,
+                    date: new Date(data.exercises[data.exercises.length - 1].date).toDateString(),
+                    _id: data._id
                 };
+
+                console.log("response", response)
 
                 err ? console.log(err) : res.json(response)
             })
