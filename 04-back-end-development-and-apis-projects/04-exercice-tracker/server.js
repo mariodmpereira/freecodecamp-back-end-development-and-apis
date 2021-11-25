@@ -31,36 +31,56 @@ const userSchema = new Schema({
 }, { versionKey: false })
 
 const User = mongoose.model('User', userSchema)
+const ERROR = { error: "There was an error while getting the users." };
 
 app.get('/api/users', (req, res) => {
-    User.find({}, (err, data) =>
-        err ? console.log(err) : res.json(data)
-    )
+    User.find({}, (err, data) => {
+        if (err) return res.send(ERROR)
+        res.json(data)
+    })
 })
 
 app.get('/api/users/:id/logs', (req, res) => {
     const id = req.params.id;
+    const dateFrom = new Date(req.query.from);
+    const dateTo = new Date(req.query.to);
+    const limit = parseInt(req.query.limit);
+
     User.findOne({ _id: new ObjectId(id) }, (err, data) => {
-        const log = [];
-        data.exercises.forEach(exercise => log.push({
-            description: exercise.description,
-            duration: exercise.duration,
-            date: new Date(exercise.date).toDateString()
-        }))
-        const response = {
-            username: data.username,
-            count: data.exercises.length,
-            _id: id,
-            log: log
+        if (err) return res.send(ERROR)
+
+        let log = [];
+
+        data.exercises.filter(exercise =>
+            new Date(Date.parse(exercise.date)).getTime() > dateFrom
+            && new Date(Date.parse(exercise.date)).getTime() < dateTo
+        )
+
+        for (const exercise of data.exercises) {
+            log.push({
+                description: exercise.description,
+                duration: exercise.duration,
+                date: new Date(exercise.date).toDateString()
+            })
         }
-        err ? console.log(err) : res.json(response)
+
+        if (limit) log = log.slice(0, limit)
+
+        res.json({
+            _id: data._id,
+            username: data.username,
+            count: log.length,
+            log: log
+        })
     })
 })
 
 app.post('/api/users', (req, res) => {
     const username = req.body.username;
-    User.create({ username: username }, (err, data) =>
-        err ? console.log(err) : res.json({ _id: data._id, username: data.username })
+    User.create({ username: username }, (err, data) => {
+            if (err) return res.send(ERROR)
+            res.json({ _id: data._id, username: data.username })
+        }
     )
 })
 
@@ -68,22 +88,16 @@ app.post('/api/users/:id/exercises', (req, res) => {
     const id = req.params.id;
     let { description, duration, date } = req.body;
 
-    console.log(date)
-
     const newExercise = {
         description: description,
         duration: duration,
         date: date ? new Date(date).toDateString() : new Date().toDateString()
     };
 
-    console.log(date)
-
-
     User.findOne({ _id: new ObjectId(id) }, (err, data) => {
-            console.log(data)
+            if (err) return res.send(ERROR)
             data.exercises.push(newExercise);
             data.save((err, data) => {
-                console.log(data)
                 const response = {
                     username: data.username,
                     description: data.exercises[data.exercises.length - 1].description,
@@ -92,9 +106,7 @@ app.post('/api/users/:id/exercises', (req, res) => {
                     _id: data._id
                 };
 
-                console.log("response", response)
-
-                err ? console.log(err) : res.json(response)
+                res.json(response)
             })
         }
     )
